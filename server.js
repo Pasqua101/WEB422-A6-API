@@ -38,6 +38,16 @@ let strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
 //use above strategy
 passport.use(strategy);
 
+
+userService.connect()
+.then(() => {
+    app.listen(HTTP_PORT, () => { console.log("API listening on: " + HTTP_PORT) });
+})
+.catch((err) => {
+    console.log("unable to start the server: " + err);
+    process.exit();
+});
+
 app.post("/api/user/register", (req, res) => {
     userService.registerUser(req.body)
     .then((msg) => {
@@ -119,11 +129,3 @@ app.delete("/api/user/history/:id",passport.authenticate('jwt', { session: false
     })
 });
 
-userService.connect()
-.then(() => {
-    app.listen(HTTP_PORT, () => { console.log("API listening on: " + HTTP_PORT) });
-})
-.catch((err) => {
-    console.log("unable to start the server: " + err);
-    process.exit();
-});
